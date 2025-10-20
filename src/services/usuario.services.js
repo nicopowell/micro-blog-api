@@ -1,4 +1,4 @@
-import UsuarioModel from "../models/usuario.model";
+import UsuarioModel from "../models/usuario.model.js";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
@@ -24,18 +24,18 @@ const loginUsuario = async (body) => {
     try {
         const {email, password} = body
 
-        usuarioExistente = UsuarioModel.findOne({email})
+        const usuarioExistente = await UsuarioModel.findOne({email})
 
-        if(!usuario) {
+        if(!usuarioExistente) {
             return {
-                msg: "Email o contraseña incorrectos (EMAIL)",
+                msg: "Email o contraseña incorrectos",
                 statusCode: 400
             }
         }
 
-        if (!bcrypt.compareSync(password, usuario.password)) {
+        if (!bcrypt.compareSync(password, usuarioExistente.password)) {
             return {
-                msg: "Email o contraseña incorrectos (CONTRA)",
+                msg: "Email o contraseña incorrectos",
                 statusCode: 400
             }
         }
@@ -44,12 +44,12 @@ const loginUsuario = async (body) => {
             idUsuario: usuarioExistente._id
         }
 
-        const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "1H"})
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "1h"})
 
         return {
             msg: "Usuario logueado exitosamente",
             token,
-            statusCode: 201
+            statusCode: 200
         }
     } catch (error) {
         return {
