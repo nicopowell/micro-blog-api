@@ -41,5 +41,4 @@ UsuarioSchema.pre("save", function(next) {
     next();
 })
 
-const UsuarioModel = model("usuarios", UsuarioSchema)
-export default UsuarioModel
+export default model("usuarios", UsuarioSchema)
