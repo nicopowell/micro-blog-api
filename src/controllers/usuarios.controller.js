@@ -1,8 +1,8 @@
-import usuarioServices from "../services/usuario.services.js"
+import { loguearUsuario, registrarNuevoUsuario } from "../services/usuario.services.js";
 
 const registerUsuario = async (req, res) => {
     try {
-        const result = await usuarioServices.registrarNuevoUsuario(req.body);
+        const result = await registrarNuevoUsuario(req.body);
 
         if(result.statusCode === 201) {
             res.status(result.statusCode).json({ msg: result.msg });
@@ -16,7 +16,7 @@ const registerUsuario = async (req, res) => {
 
 const loginUsuario = async (req, res) => {
     try {
-        const result = await usuarioServices.loginUsuario(req.body)
+        const result = await loguearUsuario(req.body)
 
         if(result.statusCode === 200) {
             res.status(result.statusCode).json({msg: result.msg, token: result.token})
@@ -29,7 +29,7 @@ const loginUsuario = async (req, res) => {
     
 }
 
-export default {
+export {
     registerUsuario,
     loginUsuario
 }

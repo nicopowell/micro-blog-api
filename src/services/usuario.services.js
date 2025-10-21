@@ -37,7 +37,7 @@ const registrarNuevoUsuario = async (body) => {
     }
 };
 
-const loginUsuario = async (body) => {
+const loguearUsuario = async (body) => {
     try {
         const { email, password } = body;
 
@@ -76,7 +76,7 @@ const loginUsuario = async (body) => {
     }
 };
 
-export default {
+export {
     registrarNuevoUsuario,
-    loginUsuario,
+    loguearUsuario,
 };
