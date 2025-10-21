@@ -101,10 +101,21 @@ const editarPost = async (idPost, idUsuario, nuevosDatos) => {
 		});
 
         return {
+            msg: "Post editado",
             postActualizado,
 			statusCode: 200,
 		};
 	} catch (error) {
+        
+        if (error.name === 'ValidationError') {
+            const mensajesError = Object.values(error.errors).map(val => val.message);
+            return {
+                msg: "Error de validación al editar:",
+                statusCode: 400,
+                errors: mensajesError
+            };
+        }
+
         return {
 			msg: "Error al editar un post",
 			statusCode: 500,

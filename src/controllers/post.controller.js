@@ -2,6 +2,7 @@ import {
     crearPost as crearPostService,
     obtenerPosts as obtenerPostsService,
     borrarPost as borrarPostService,
+    editarPost as editarPostService
 } from "../services/post.service.js";
 
 const crearPost = async (req, res) => {
@@ -38,4 +39,24 @@ const borrarPost = async (req, res) => {
     }
 };
 
-export { crearPost, obtenerPosts, borrarPost };
+const editarPost = async (req, res) => {
+    try {
+        const result = await editarPostService(req.params.idPost, req.idUsuario, req.body)
+        
+        if (result.statusCode === 200) {
+            res.status(result.statusCode).json({ 
+                msg: result.msg, 
+                post: result.postActualizado 
+            });
+        } else {
+            res.status(result.statusCode).json({ 
+                msg: result.msg,
+                errors: result.errors
+            });
+        }
+    } catch (error) {
+        res.status(500).json({ msg: "Error en el controlador de update", error: error.message });
+    }
+}
+
+export { crearPost, obtenerPosts, borrarPost, editarPost };
