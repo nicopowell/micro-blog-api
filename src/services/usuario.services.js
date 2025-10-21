@@ -1,66 +1,82 @@
 import UsuarioModel from "../models/usuario.model.js";
-import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const registrarNuevoUsuario = async (body) => {
     try {
-        const usuario = new UsuarioModel(body)
+        const usuario = new UsuarioModel(body);
         await usuario.save();
 
         return {
             msg: "Usuario creado exitosamente",
-            statusCode: 201
-        }
+            statusCode: 201,
+        };
     } catch (error) {
+        if (error.code === 11000) {
+            return {
+                msg: "El email ya se encuentra registrado.",
+                statusCode: 400,
+            };
+        }
+
+        if (error.name === 'ValidationError') {
+            const mensajesError = Object.values(error.errors).map(val => val.message);
+            
+            return {
+                msg: "Error de validación:",
+                statusCode: 400,
+                errors: mensajesError
+            };
+        }
+
         return {
             msg: "Error al registrar el usuario",
             statusCode: 500,
-            error
-        }
+            error: error.message,
+        };
     }
-}
+};
 
 const loginUsuario = async (body) => {
     try {
-        const {email, password} = body
+        const { email, password } = body;
 
-        const usuarioExistente = await UsuarioModel.findOne({email})
-
-        if(!usuarioExistente) {
+        const usuarioExistente = await UsuarioModel.findOne({ email });
+        if (!usuarioExistente) {
             return {
                 msg: "Email o contraseña incorrectos",
-                statusCode: 400
-            }
+                statusCode: 400,
+            };
         }
 
         if (!bcrypt.compareSync(password, usuarioExistente.password)) {
             return {
                 msg: "Email o contraseña incorrectos",
-                statusCode: 400
-            }
+                statusCode: 400,
+            };
         }
 
         const payload = {
-            idUsuario: usuarioExistente._id
-        }
+            idUsuario: usuarioExistente._id,
+        };
 
-        const token = jwt.sign(payload, process.env.JWT_SECRET, {expiresIn: "1h"})
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1h" });
 
         return {
             msg: "Usuario logueado exitosamente",
             token,
-            statusCode: 200
-        }
+            statusCode: 200,
+        };
     } catch (error) {
         return {
             msg: "Error al loguear el usuario",
             statusCode: 500,
-            error
-        }
+            error,
+        };
     }
-}
+};
 
 export default {
     registrarNuevoUsuario,
-    loginUsuario
-}
+    loginUsuario,
+};
