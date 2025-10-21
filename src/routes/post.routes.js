@@ -6,6 +6,6 @@ const router = Router()
 
 router.get("/", obtenerPosts);
 router.post("/", checkAuth, crearPost);
-router.delete("/", checkAuth, borrarPost);
+router.delete("/:idPost", checkAuth, borrarPost);
 
 export default router
