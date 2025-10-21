@@ -45,4 +45,37 @@ const obtenerPosts = async () => {
     }
 };
 
-export { crearPost, obtenerPosts };
+const borrarPost = async (idPost, idUsuario) => {
+    try {
+        const post = await PostModel.findById(idPost);
+
+        if(!post) {
+            return {
+                msg: "No se encontro el post",
+                statusCode: 404
+            };
+        }
+
+        if(post.autor.toString() !== idUsuario) {
+            return {
+                msg: "No tienes permiso de borrar este post",
+                statusCode: 403
+            }; 
+        }
+
+        await PostModel.findByIdAndDelete(idPost)
+        return {
+            msg: "Post eliminado",
+            statusCode: 200
+        }; 
+    } catch (error) {
+        return {
+            msg: "Error al eliminar un post",
+            statusCode: 500,
+            error: error.message,
+        };
+    }
+    
+}
+
+export { crearPost, obtenerPosts, borrarPost };
