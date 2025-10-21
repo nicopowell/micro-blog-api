@@ -4,6 +4,7 @@ import morgan from "morgan"
 import "./src/DB/config.js"
 
 import usuariosRouter from "./src/routes/usuarios.routes.js"
+import postsRouter from "./src/routes/post.routes.js"
 
 const app = express();
 const port = process.env.PORT || 3001
@@ -12,6 +13,8 @@ const port = process.env.PORT || 3001
 app.use(express.json())
 app.use(morgan("tiny"))
 app.use("/api/usuarios", usuariosRouter)
+app.use('/api/posts', postsRouter)
+
 
 app.listen(port, () => {
     console.log("Servidor corriendo en el puerto", port)
