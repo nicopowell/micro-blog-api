@@ -8,7 +8,9 @@ const checkAuth = async (req, res, next) => {
             res.status(401).json({ msg: 'No hay token, permiso no valido' })
         }
 
-        const payload = jwt.verify(token, process.env.JWT_SECRET)
+        const tokenLimpio = token.split(' ')[1];
+
+        const payload = jwt.verify(tokenLimpio, process.env.JWT_SECRET)
 
         req.idUsuario = payload.idUsuario
 
@@ -18,4 +20,4 @@ const checkAuth = async (req, res, next) => {
     }
 }
 
-export default checkAuth
+export { checkAuth }
