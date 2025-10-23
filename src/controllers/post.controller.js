@@ -23,7 +23,7 @@ const obtenerPosts = async (req, res) => {
     try {
         const result = await obtenerPostsService();
 
-        res.status(result.statusCode).json(result.posts);
+        res.status(result.statusCode).json(result);
     } catch (error) {
         res.status(500).json({ msg: "Error en el controlador de post", error: error.message });
     }
