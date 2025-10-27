@@ -1,6 +1,7 @@
 import {
     crearPost as crearPostService,
     obtenerPosts as obtenerPostsService,
+    obtenerPostPorId as obtenerPostPorIdService,
     borrarPost as borrarPostService,
     editarPost as editarPostService
 } from "../services/post.service.js";
@@ -24,6 +25,20 @@ const obtenerPosts = async (req, res) => {
         const result = await obtenerPostsService();
 
         res.status(result.statusCode).json(result);
+    } catch (error) {
+        res.status(500).json({ msg: "Error en el controlador de post", error: error.message });
+    }
+};
+
+const obtenerPostPorId = async (req, res) => {
+    try {
+        const result = await obtenerPostPorIdService(req.params.idPost);
+
+        if (result.statusCode === 200) {
+            res.status(result.statusCode).json(result.post);
+        } else {
+            res.status(result.statusCode).json({ msg: result.msg, errors: result.errors });
+        }
     } catch (error) {
         res.status(500).json({ msg: "Error en el controlador de post", error: error.message });
     }
@@ -59,4 +74,4 @@ const editarPost = async (req, res) => {
     }
 }
 
-export { crearPost, obtenerPosts, borrarPost, editarPost };
+export { crearPost, obtenerPosts, obtenerPostPorId, borrarPost, editarPost };

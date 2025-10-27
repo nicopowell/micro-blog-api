@@ -45,6 +45,28 @@ const obtenerPosts = async () => {
 	}
 };
 
+const obtenerPostPorId = async (idPost) => {
+	try {
+        const post = await PostModel.findById(idPost).populate("autor");
+		if (!post)
+			return {
+				statusCode: 404,
+                msg: "No se encontro el post"
+			};
+
+		return {
+			statusCode: 200,
+			post: post,
+		};
+	} catch (error) {
+		return {
+			msg: "Error al obtener los posts",
+			statusCode: 500,
+			error: error.message,
+		};
+	}
+};
+
 const borrarPost = async (idPost, idUsuario) => {
 	try {
 		const post = await PostModel.findById(idPost);
@@ -100,28 +122,27 @@ const editarPost = async (idPost, idUsuario, nuevosDatos) => {
 			runValidators: true,
 		});
 
-        return {
-            msg: "Post editado",
-            postActualizado,
+		return {
+			msg: "Post editado",
+			postActualizado,
 			statusCode: 200,
 		};
 	} catch (error) {
-        
-        if (error.name === 'ValidationError') {
-            const mensajesError = Object.values(error.errors).map(val => val.message);
-            return {
-                msg: "Error de validación al editar:",
-                statusCode: 400,
-                errors: mensajesError
-            };
-        }
+		if (error.name === "ValidationError") {
+			const mensajesError = Object.values(error.errors).map((val) => val.message);
+			return {
+				msg: "Error de validación al editar:",
+				statusCode: 400,
+				errors: mensajesError,
+			};
+		}
 
-        return {
+		return {
 			msg: "Error al editar un post",
 			statusCode: 500,
 			error: error.message,
 		};
-    }
+	}
 };
 
-export { crearPost, obtenerPosts, borrarPost, editarPost };
+export { crearPost, obtenerPosts, obtenerPostPorId, borrarPost, editarPost };
